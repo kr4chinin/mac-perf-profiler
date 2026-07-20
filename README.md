@@ -24,22 +24,42 @@ plus a standalone collector script you can also run by hand.
 Every check only **reads** state — no `sudo`, no process kills, no config
 changes, no deletes. Safe to run on a machine that's already thrashing.
 
-## Usage
+## Install
+
+Via the [skills](https://www.skills.sh/) CLI ([vercel-labs/skills](https://github.com/vercel-labs/skills)):
 
 ```bash
-bash scripts/collect.sh          # full report (~6s live paging sample)
-bash scripts/collect.sh --fast   # skip the live paging sample
+npx skills add kr4chinin/mac-perf-profiler        # into ./.claude/skills (project)
+npx skills add -g kr4chinin/mac-perf-profiler     # into ~/.claude/skills (global)
+```
+
+Or manually — copy `skills/mac-perf-profiler/` into `~/.claude/skills/` (global)
+or a project's `.claude/skills/`. Claude invokes it automatically when you say
+things like "my Mac is slow" or "profile my system performance".
+
+## Usage
+
+The skill drives itself, but you can also run the collector by hand:
+
+```bash
+bash skills/mac-perf-profiler/scripts/collect.sh          # full report (~6s live paging sample)
+bash skills/mac-perf-profiler/scripts/collect.sh --fast   # skip the live paging sample
 ```
 
 Read the report top-to-bottom; the **QUICK VERDICT** at the end classifies the
 situation and points at the fix. `SKILL.md` has the interpretation guide and a
 safe remediation playbook.
 
-## As a Claude Code skill
+## Repository layout
 
-Drop this directory in `~/.claude/skills/mac-perf-profiler/` (user-global) or a
-project's `.claude/skills/`. Claude invokes it automatically when you say things
-like "my Mac is slow" or "profile my system performance".
+```
+skills/
+└── mac-perf-profiler/
+    ├── SKILL.md               # the skill: mental model, interpretation, playbook
+    └── scripts/collect.sh     # read-only diagnostics collector
+```
+
+This `skills/<name>/SKILL.md` layout is what the `skills` CLI discovers.
 
 ## License
 
