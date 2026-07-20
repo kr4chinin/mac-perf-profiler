@@ -59,7 +59,34 @@ skills/
     └── scripts/collect.sh     # read-only diagnostics collector
 ```
 
-This `skills/<name>/SKILL.md` layout is what the `skills` CLI discovers.
+This `skills/<name>/SKILL.md` layout is what the `skills` CLI discovers, and it's
+also how [skills.sh](https://www.skills.sh/) makes the skill installable. There
+is no manual submission step: skills.sh is a front end over the open-source
+[`skills` CLI](https://github.com/vercel-labs/skills), skills are installed
+straight from public GitHub repos with `npx skills add owner/repo`, and the
+leaderboard is populated from the CLI's anonymous install telemetry. Keeping this
+repo public and installable is all that's required for it to show up.
+
+## Development & source of truth
+
+**This repository is the single source of truth.** The skill Claude Code loads
+from `~/.claude/skills/` should be a *symlink* into this repo, not a copy — so an
+edit here is live immediately and there's nothing to keep in sync:
+
+```bash
+# clone once, then symlink the skill into your global skills dir
+git clone https://github.com/kr4chinin/mac-perf-profiler ~/dev/mac-perf-profiler
+ln -s ~/dev/mac-perf-profiler/skills/mac-perf-profiler ~/.claude/skills/mac-perf-profiler
+```
+
+Workflow after that:
+
+1. Edit `skills/mac-perf-profiler/SKILL.md` or `scripts/collect.sh` in this repo —
+   the change is instantly live in Claude Code via the symlink.
+2. `git commit` + `git push` from this repo to publish it.
+
+(`npx skills add -g kr4chinin/mac-perf-profiler` also works, but it installs a
+*copy* you'd have to re-pull after each change; the symlink avoids that.)
 
 ## License
 
